@@ -10,4 +10,9 @@ package com.mycompany.proyecto2_edd_ps25.models;
  */
 public enum VehicleType {
     
+    AMBULANCIA,
+    POLICIA,
+    PARTICULAR,
+    TRANSPORTE;
+    
 }
