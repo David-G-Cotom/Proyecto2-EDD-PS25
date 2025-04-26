@@ -12,10 +12,17 @@ package com.mycompany.proyecto2_edd_ps25.structs.list;
 public class NodeList<T> {
     
     private T data;
+    private String key;
     private NodeList<T> next;
 
     public NodeList(T data) {
         this.data = data;
+        this.next = null;
+    }
+
+    public NodeList(T data, String key) {
+        this.data = data;
+        this.key = key;
         this.next = null;
     }
 
@@ -25,6 +32,14 @@ public class NodeList<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public NodeList<T> getNext() {

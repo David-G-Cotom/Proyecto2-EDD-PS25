@@ -12,10 +12,17 @@ package com.mycompany.proyecto2_edd_ps25.structs.queue;
 public class NodeQueue<T> {
     
     private T data;
+    private int priority;
     private NodeQueue<T>  next;
 
     public NodeQueue(T data) {
         this.data = data;
+        this.next = null;
+    }
+
+    public NodeQueue(T data, int priority) {
+        this.data = data;
+        this.priority = priority;
         this.next = null;
     }
 
@@ -25,6 +32,14 @@ public class NodeQueue<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public NodeQueue<T> getNext() {
