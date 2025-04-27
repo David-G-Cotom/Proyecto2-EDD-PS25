@@ -4,6 +4,8 @@
 
 package com.mycompany.proyecto2_edd_ps25;
 
+import com.mycompany.proyecto2_edd_ps25.controllers.SystemController;
+
 /**
  *
  * @author Carlos Cotom
@@ -11,6 +13,7 @@ package com.mycompany.proyecto2_edd_ps25;
 public class Proyecto2_EDD_PS25 {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        SystemController simulator = new SystemController();
+        simulator.execute();
     }
 }

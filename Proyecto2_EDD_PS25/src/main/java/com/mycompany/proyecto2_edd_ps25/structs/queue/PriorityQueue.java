@@ -13,8 +13,8 @@ public class PriorityQueue<T> {
 
     private NodeQueue<T> head;
 
-    public PriorityQueue(NodeQueue<T> head) {
-        this.head = head;
+    public PriorityQueue() {
+        this.head = null;
     }
 
     public NodeQueue<T> getHead() {
