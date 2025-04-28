@@ -7,7 +7,6 @@ package com.mycompany.proyecto2_edd_ps25.utils;
 import com.mycompany.proyecto2_edd_ps25.models.Vehicle;
 import com.mycompany.proyecto2_edd_ps25.models.VehicleType;
 import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
-import com.mycompany.proyecto2_edd_ps25.structs.queue.PriorityQueue;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class Utilities {
     public Utilities() {
     }
 
-    public void readTrafficFile(String filePath, PriorityQueue<Vehicle> vehicles, LinkedList<int[]> coordinates) {
+    public void readTrafficFile(String filePath, LinkedList<Vehicle> vehicles, LinkedList<int[]> coordinates) {
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             //CONSIDERAR SI HAY ENCABEZADO
@@ -38,8 +37,8 @@ public class Utilities {
                         String destination = data[3].trim().toUpperCase();
                         int priority = Integer.parseInt(data[4].trim());
                         int waitingTime = Integer.parseInt(data[5].trim());
-                        Vehicle newVechicle = new Vehicle(vehicleType, plate, origin, destination, priority, waitingTime, 0);
-                        vehicles.enqueue(newVechicle, priority);
+                        Vehicle newVechicle = new Vehicle(vehicleType, plate, origin, destination, waitingTime, priority);
+                        vehicles.addElementAt(newVechicle);
                         int[] originCoordinates = this.convertCoordinate(origin);
                         int[] destinationCoordinates = this.convertCoordinate(destination);
                         coordinates.addElementAt(originCoordinates);
@@ -74,6 +73,17 @@ public class Utilities {
         }
         dimensions[1] = Integer.parseInt(number);
         return dimensions;
+    }
+    
+    public String convertCoordinate(int value) {
+        String coordinate = "";
+        int letterDimensions = 26;
+        int dimensions = value / letterDimensions;
+        int residue = value % letterDimensions;
+        for (int i = 0; i < dimensions; i++) coordinate += "A";
+        
+        coordinate += 'A' + residue - 1;
+        return coordinate;
     }
 
 }

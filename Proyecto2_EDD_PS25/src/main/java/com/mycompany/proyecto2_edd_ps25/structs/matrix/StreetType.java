@@ -56,6 +56,96 @@ public enum StreetType {
                     | |__
                     |  __
                     | |  
+                    """.stripIndent()),
+    INTERSECCION_SEMAFORO("""
+                _| |_
+                _ & _
+                 | | 
+                 """.stripIndent()),
+    CRUCE_ESQUINA_1_SEMAFORO("""
+                     ____
+                    |& __
+                    | |  
+                    """.stripIndent()),
+    CRUCE_ESQUINA_2_SEMAFORO("""
+                    ____ 
+                    __ &|
+                      | |
+                    """.stripIndent()),
+    CRUCE_ESQUINA_3_SEMAFORO("""
+                    | |__
+                    |&   
+                    |____
+                    """.stripIndent()),
+    CRUCE_ESQUINA_4_SEMAFORO("""
+                    __| |
+                       &|
+                    ____|
+                    """.stripIndent()),
+    CRUCE_NORTE_SEMAFORO("""
+                _____
+                _ & _
+                 | | 
+                """.stripIndent()),
+    CRUCE_DERECHA_SEMAFORO("""
+                __| |
+                __ &|
+                  | |
+                  """.stripIndent()),
+    CRUCE_SUR_SEMAFORO("""
+            _| |_
+              &  
+            _____
+              """.stripIndent()),
+    CRUCE_IZQUIERDA_SEMAFORO("""
+                    | |__
+                    |& __
+                    | |  
+                    """.stripIndent()),
+    INTERSECCION_NO_LIBRE("""
+                _| |_
+                _ # _
+                 | | 
+                 """.stripIndent()),
+    CRUCE_ESQUINA_1_NO_LIBRE("""
+                     ____
+                    |# __
+                    | |  
+                    """.stripIndent()),
+    CRUCE_ESQUINA_2_NO_LIBRE("""
+                    ____ 
+                    __ #|
+                      | |
+                    """.stripIndent()),
+    CRUCE_ESQUINA_3_NO_LIBRE("""
+                    | |__
+                    |#   
+                    |____
+                    """.stripIndent()),
+    CRUCE_ESQUINA_4_NO_LIBRE("""
+                    __| |
+                       #|
+                    ____|
+                    """.stripIndent()),
+    CRUCE_NORTE_NO_LIBRE("""
+                _____
+                _ # _
+                 | | 
+                """.stripIndent()),
+    CRUCE_DERECHA_NO_LIBRE("""
+                __| |
+                __ #|
+                  | |
+                  """.stripIndent()),
+    CRUCE_SUR_NO_LIBRE("""
+            _| |_
+              #  
+            _____
+              """.stripIndent()),
+    CRUCE_IZQUIERDA_NO_LIBRE("""
+                    | |__
+                    |# __
+                    | |  
                     """.stripIndent());
     
     private String template;

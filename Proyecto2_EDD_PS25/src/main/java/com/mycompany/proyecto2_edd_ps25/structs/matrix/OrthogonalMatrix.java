@@ -4,6 +4,9 @@
  */
 package com.mycompany.proyecto2_edd_ps25.structs.matrix;
 
+import com.mycompany.proyecto2_edd_ps25.models.Intersection;
+import com.mycompany.proyecto2_edd_ps25.utils.Utilities;
+
 /**
  *
  * @author Carlos Cotom
@@ -11,13 +14,15 @@ package com.mycompany.proyecto2_edd_ps25.structs.matrix;
  */
 public class OrthogonalMatrix<T> {
     
-    private NodeMatrix<T> root; //Nodo en la posicion (0,0)
+    private NodeMatrix root; //Nodo en la posicion (0,0)
     int dimensionX, dimensionY;
+    private final Utilities utilities;
 
     public OrthogonalMatrix(int dimensionX, int dimensionY) {
         this.dimensionX = dimensionX;
         this.dimensionY = dimensionY;
-        this.root = new NodeMatrix<>(null, 0, 0);
+        this.root = new NodeMatrix<>(new Intersection("A1"), 0, 0);
+        this.utilities = new Utilities();
         this.createOrthogonalMatrix();
     }
 
@@ -50,18 +55,21 @@ public class OrthogonalMatrix<T> {
         for (int i = 0; i < this.dimensionX - 1; i++) {
             this.connectNodes(aux, i);
             aux = this.getNode(i, 0);
-            NodeMatrix newNode = new NodeMatrix<T>(null, i + 1, 0);
+            String coordinateLetter = this.utilities.convertCoordinate(i + 1);
+            String coordinateNumber = "0";
+            NodeMatrix newNode = new NodeMatrix<>(new Intersection(coordinateLetter + coordinateNumber), i + 1, 0);
             aux.setBottom(newNode);
             newNode.setTop(aux);
             aux = newNode;
             this.connectNodes(aux, i + 1);
         }
-        System.out.println("CIUDAD CREADA CON EXITO!!!");
     }
 
     private void connectNodes(NodeMatrix<T> aux, int i) {
         for (int j = 0; j < this.dimensionY - 1; j++) {
-            NodeMatrix newNode = new NodeMatrix<T>(null, i, j + 1);
+            String coordinateLetter = this.utilities.convertCoordinate(i);
+            String coordinateNumber = String.valueOf(j + 1);
+            NodeMatrix newNode = new NodeMatrix<>(new Intersection(coordinateLetter + coordinateNumber), i, j + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
             if (i > 0) {
@@ -95,7 +103,9 @@ public class OrthogonalMatrix<T> {
         if (incrementX > 0) {
             for (int i = this.dimensionX; i < this.dimensionX + incrementX; i++) {
                 aux = this.getNode(this.dimensionX - 1, 0);
-                NodeMatrix newNode = new NodeMatrix(null, this.dimensionX, 0);
+                String coordinateLetter = this.utilities.convertCoordinate(this.dimensionX);
+                String coordinateNumber = String.valueOf(0);
+                NodeMatrix newNode = new NodeMatrix(new Intersection(coordinateLetter + coordinateNumber), this.dimensionX, 0);
                 newNode.setTop(aux);
                 aux.setBottom(newNode);
                 aux = newNode;
@@ -108,7 +118,9 @@ public class OrthogonalMatrix<T> {
     
     private void incrementColumns(NodeMatrix<T> aux, int i, int incrementY) {
         for (int j = 0; j < incrementY; j++) {
-            NodeMatrix newNode = new NodeMatrix(null, i, aux.getY() + 1);
+            String coordinateLetter = this.utilities.convertCoordinate(i);
+            String coordinateNumber = String.valueOf(aux.getY() + 1);
+            NodeMatrix newNode = new NodeMatrix(new Intersection(coordinateLetter + coordinateNumber), i, aux.getY() + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
             if (i > 0) {
@@ -121,46 +133,14 @@ public class OrthogonalMatrix<T> {
     
     private void incrementRows(NodeMatrix<T> aux, int i, int incrementY) {
         for (int j = 0; j < this.dimensionY + incrementY - 1; j++) {
-            NodeMatrix newNode = new NodeMatrix(null, i, j + 1);
+            String coordinateLetter = this.utilities.convertCoordinate(i);
+            String coordinateNumber = String.valueOf(j + 1);
+            NodeMatrix newNode = new NodeMatrix(new Intersection(coordinateLetter + coordinateNumber), i, j + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
             newNode.setTop(aux.getTop().getNext());
             aux.getTop().getNext().setBottom(newNode);
             aux = newNode;
-        }
-    }
-    
-    public void updateCityTemplate() {
-        NodeMatrix<T> aux = this.root;
-        for (int i = 0; i < this.dimensionY; i++) {
-            for (int j = 0; j < this.dimensionX; j++) {
-                this.setStreetType(aux);
-                aux = aux.getNext();
-            }
-            aux = this.getNode(i, 0);
-            aux = aux.getBottom();
-        }
-    }
-    
-    private void setStreetType(NodeMatrix node) {
-        if (node.getX() == 0 && node.getY() == 0) {
-            node.setStreetType(StreetType.CRUCE_ESQUINA_1);
-        } else if (node.getX() == 0 && node.getNext() != null) {
-            node.setStreetType(StreetType.CRUCE_NORTE);
-        } else if (node.getX() == 0 && node.getNext() == null) {
-            node.setStreetType(StreetType.CRUCE_ESQUINA_2);
-        } else if (node.getY() == 0 && node.getBottom() != null) {
-            node.setStreetType(StreetType.CRUCE_IZQUIERDA);
-        } else if (node.getY() == 0 && node.getBottom() == null) {
-            node.setStreetType(StreetType.CRUCE_ESQUINA_3);
-        } else if (node.getX() == this.dimensionX - 1 && node.getNext() != null) {
-            node.setStreetType(StreetType.CRUCE_SUR);
-        } else if (node.getY() == this.dimensionY - 1 && node.getBottom() != null) {
-            node.setStreetType(StreetType.CRUCE_DERECHA);
-        } else if (node.getX() == this.dimensionX - 1 && node.getY() == this.dimensionY - 1) {
-            node.setStreetType(StreetType.CRUCE_ESQUINA_4);
-        } else {
-            node.setStreetType(StreetType.INTERSECCION);
         }
     }
     

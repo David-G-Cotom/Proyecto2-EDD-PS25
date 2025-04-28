@@ -8,7 +8,6 @@ import com.mycompany.proyecto2_edd_ps25.models.City;
 import com.mycompany.proyecto2_edd_ps25.models.Vehicle;
 import com.mycompany.proyecto2_edd_ps25.models.VehicleType;
 import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
-import com.mycompany.proyecto2_edd_ps25.structs.queue.PriorityQueue;
 import com.mycompany.proyecto2_edd_ps25.utils.Utilities;
 import com.mycompany.proyecto2_edd_ps25.utils.Posters;
 
@@ -20,16 +19,16 @@ public class SystemController {
     
     private final Posters posters;
     private final Utilities utilities;
-    private PriorityQueue<Vehicle> vehicles;
+    private LinkedList<Vehicle> vehicles;
     private LinkedList<int[]> coordinates;
     private City city;
 
     public SystemController() {
         this.posters = new Posters();
         this.utilities = new Utilities();
-        this.vehicles = new PriorityQueue<>();
+        this.vehicles = new LinkedList<>();
         this.coordinates = new LinkedList<>();
-        this.city = new City(5, 5); //Dimensiones iniciales de la ciudad
+        this.city = new City(10, 10); //Dimensiones iniciales de la ciudad
     }
     
     private void enterVechicle() {
@@ -39,14 +38,14 @@ public class SystemController {
         String destination = this.posters.destinationIncome();
         int priority = this.posters.priorityEntry();
         int waitingTime = this.posters.incomeWaitingTime();
-        Vehicle newVechicle = new Vehicle(vehicleType, plate, origin, destination, priority, waitingTime, 0);
-        this.vehicles.enqueue(newVechicle, priority);
-        System.out.println("Vehiculo Registrado en el Sistema");
+        Vehicle newVechicle = new Vehicle(vehicleType, plate, origin, destination, waitingTime, priority);
         int[] originCoordinates = this.utilities.convertCoordinate(origin);
         int[] destinationCoordinates = this.utilities.convertCoordinate(destination);
         int dimensionX = originCoordinates[0] > destinationCoordinates[0] ? originCoordinates[0] : destinationCoordinates[0];
         int dimensionY = originCoordinates[1] > destinationCoordinates[1] ? originCoordinates[1] : destinationCoordinates[1];
         this.city.checkDimensions(dimensionX, dimensionY);
+        this.city.putVehicle(newVechicle, originCoordinates);
+        System.out.println("Vehiculo Registrado en el Sistema");
     }
     
     public void processVehicle() {
@@ -77,6 +76,9 @@ public class SystemController {
                     if (currentY > dimensionY) dimensionY = currentY;
                 }
                 this.city.checkDimensions(dimensionX, dimensionY);
+                for (int i = 0; i < this.coordinates.getSize(); i+=2) {
+                    this.city.putVehicle(this.vehicles.getElementAt(i/2).getData(), this.coordinates.getElementAt(i).getData());
+                }
             }
         }
         this.city.printCity();
