@@ -17,6 +17,7 @@ public class NodeMatrix<T> {
     private NodeMatrix prev;
     private NodeMatrix top;
     private NodeMatrix bottom;
+    private StreetType streetType;
 
     public NodeMatrix(T data, int x, int y) {
         this.data = data;
@@ -82,6 +83,14 @@ public class NodeMatrix<T> {
 
     public void setBottom(NodeMatrix bottom) {
         this.bottom = bottom;
+    }
+
+    public StreetType getStreetType() {
+        return streetType;
+    }
+
+    public void setStreetType(StreetType streetType) {
+        this.streetType = streetType;
     }
     
 }
