@@ -21,6 +21,7 @@ public class Vehicle {
     private int urgencyLevel;
     private int[] direction;
     private final Utilities utilities;
+    private boolean isAtDestination;
 
     public Vehicle(VehicleType vehicleType, String plate, String IntersectionOrigin, String destinationIntersection, int waitingTime, int urgencyLevel) {
         this.vehicleType = vehicleType;
@@ -33,6 +34,7 @@ public class Vehicle {
         this.utilities = new Utilities();
         this.setDirectionMovement();
         this.getFullPriority();
+        this.isAtDestination = false;
     }
 
     public VehicleType getVehicleType() {
@@ -97,6 +99,11 @@ public class Vehicle {
 
     public void setDirection(int[] direction) {
         this.direction = direction;
+    }
+
+    public boolean getIsAtDestination() {
+        this.isAtDestination = this.direction[0] == 0 && this.direction[1] == 0;
+        return this.isAtDestination;
     }
 
     @Override

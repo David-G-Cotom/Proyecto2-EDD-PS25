@@ -110,14 +110,14 @@ public class AVLTree<T> {
         node.getRight().setBalanceFactor(this.obtainBalanceFactor(node.getRight()));
     }
     
-    public void delete(int size) {
-        this.delete(size, this.root);
+    public void delete(int size, String id) {
+        this.delete(size, this.root, id);
     }
     
-    private void delete(int size, TreeNode root) {
+    private void delete(int size, TreeNode root, String id) {
         if (root == null) return;
         
-        if (size == root.getSize()) {
+        if (size == root.getSize() && id.equals(root.getId())) {
             if (this.isLeaf(root)) {
                 root = null;
                 return;
@@ -133,14 +133,14 @@ public class AVLTree<T> {
             TreeNode rightNode = this.getMajorNode(root.getLeft());
             root.setData(rightNode.getData());
             root.setSize(rightNode.getSize());
-            this.delete(rightNode.getSize(), root.getLeft());
+            this.delete(rightNode.getSize(), root.getLeft(), id);
             size = root.getSize();
         }
         if (size < root.getSize()) {
-            this.delete(size, root.getLeft());
+            this.delete(size, root.getLeft(), id);
         }
-        if (size > root.getSize()) {
-            this.delete(size, root.getRight());
+        if (size >= root.getSize()) {
+            this.delete(size, root.getRight(), id);
         }
         this.balanceTree(root);
     }
@@ -149,12 +149,12 @@ public class AVLTree<T> {
         return node.getLeft() == null && node.getRight() == null;
     }
     
-    public void updateNode(int size, int newSize) {
-        TreeNode node = this.search(size);
+    public void updateNode(int size, int newSize, String id) {
+        TreeNode node = this.search(size, id);
         if (node != null) {
             TreeNode updatedNode = new TreeNode(node.getData());
             updatedNode.setSize(newSize);
-            this.delete(size);
+            this.delete(size, id);
             this.insert(updatedNode);
         }
     }
@@ -166,19 +166,19 @@ public class AVLTree<T> {
         return getMajorNode(node.getRight());
     }
     
-    public TreeNode search(int size) {
-        return this.search(size, this.root);
+    public TreeNode search(int size, String id) {
+        return this.search(size, this.root, id);
     }
     
-    private TreeNode search(int size, TreeNode node) {
+    private TreeNode search(int size, TreeNode node, String id) {
         if (node != null) {
-            if (size == node.getSize()) return node;
+            if (size == node.getSize() && id.equals(node.getId())) return node;
 
             if (size < node.getSize()) {
-                return this.search(size, node.getLeft());
+                return this.search(size, node.getLeft(), id);
             }
-            if (size > node.getSize()) {
-                return this.search(size, node.getRight());
+            if (size >= node.getSize()) {
+                return this.search(size, node.getRight(), id);
             }
         }
         return null;

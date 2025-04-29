@@ -14,13 +14,15 @@ public class TreeNode<T> {
     private T data;
     private int balanceFactor;
     private int size;
+    private String id;
     private TreeNode left;
     private TreeNode right;
 
-    public TreeNode(T data, int size, int balanceFactor) {
+    public TreeNode(T data, int size, String id) {
         this.data = data;
-        this.balanceFactor = balanceFactor;
+        this.balanceFactor = 0;
         this.size = size;
+        this.id = id;
         this.left = null;
         this.right = null;
     }
@@ -55,6 +57,14 @@ public class TreeNode<T> {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public TreeNode getLeft() {

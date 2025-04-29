@@ -114,4 +114,17 @@ public class LinkedList<T> {
         return this.size == 0 && this.head == null;
     }
     
+    public void clearList() {
+        if (!this.isEmpty()) {
+            NodeList<T> current = this.head;
+            while (current != null) {
+                NodeList<T> next = current.getNext();
+                current.setNext(null);
+                current = next;
+            }
+            this.head = null;
+            this.size = 0;
+        }
+    }
+    
 }

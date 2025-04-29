@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyecto2_edd_ps25.models;
 
+import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.NodeMatrix;
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.OrthogonalMatrix;
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.StreetType;
@@ -14,40 +15,42 @@ import com.mycompany.proyecto2_edd_ps25.structs.matrix.StreetType;
  */
 public class City {
     
-    private OrthogonalMatrix<Intersection> city;
+    private OrthogonalMatrix<Intersection> matrix;
 
     public City(int dimensionX, int dimensionY) {
-        this.city = new OrthogonalMatrix<>(dimensionX, dimensionY);
+        this.matrix = new OrthogonalMatrix<>(dimensionX, dimensionY);
         this.updateCityTemplate();
     }
 
-    public OrthogonalMatrix<Intersection> getCity() {
-        return city;
+    public OrthogonalMatrix<Intersection> getMatrix() {
+        return matrix;
     }
 
-    public void setCity(OrthogonalMatrix<Intersection> city) {
-        this.city = city;
+    public void setMatrix(OrthogonalMatrix<Intersection> matrix) {
+        this.matrix = matrix;
     }
     
-    public void checkDimensions(int rowDimensions, int columnDimensions) {
-        int incrementX = rowDimensions - this.city.getDimensionX();
-        int incrementY = columnDimensions - this.city.getDimensionY();
+    public boolean checkDimensions(int rowDimensions, int columnDimensions, LinkedList<Intersection> newIntersections) {
+        int incrementX = rowDimensions - this.matrix.getDimensionX();
+        int incrementY = columnDimensions - this.matrix.getDimensionY();
         if (incrementX > 0 || incrementY > 0) {
-            this.city.incraseMatrix(incrementX, incrementY);
+            this.matrix.incraseMatrix(incrementX, incrementY, newIntersections);
             this.updateCityTemplate();
+            return true;
         }
+        return false;
     }
     
     public void putVehicle(Vehicle newVehicle, int[] origin) {
-        this.city.getNode(origin[0], origin[1]).getData().incraseComplexity(newVehicle);
+        this.matrix.getNode(origin[0], origin[1]).getData().incraseComplexity(newVehicle);
     }
     
     public void printCity() {
         int height = StreetType.INTERSECCION.getLines().length;
         int maxWidth = 0;
-        for (int i = 0; i < this.city.getDimensionX(); i++) {
-            for (int j = 0; j < this.city.getDimensionY(); j++) {
-                StreetType t = this.city.getNode(i, j).getStreetType();
+        for (int i = 0; i < this.matrix.getDimensionX(); i++) {
+            for (int j = 0; j < this.matrix.getDimensionY(); j++) {
+                StreetType t = this.matrix.getNode(i, j).getStreetType();
                 for (String line : t.getLines()) {
                     maxWidth = Math.max(maxWidth, line.length());
                 }
@@ -55,11 +58,11 @@ public class City {
         }
         int labelWidth = 2;
         System.out.print(" ".repeat(labelWidth));
-        for (int i = 0; i < this.city.getDimensionY(); i++) {
+        for (int i = 0; i < this.matrix.getDimensionY(); i++) {
             System.out.print(String.format("%-" + maxWidth + "s", i + 1));  
         }
         System.out.println();
-        for (int i = 0; i < this.city.getDimensionX(); i++) {
+        for (int i = 0; i < this.matrix.getDimensionX(); i++) {
             char rowChar = (char)('A' + i);
             for (int line = 0; line < height; line++) {
                 if (line == 1) {
@@ -67,8 +70,8 @@ public class City {
                 } else {
                     System.out.print(" ".repeat(labelWidth));
                 }
-                for (int j = 0; j < this.city.getDimensionY(); j++) {
-                    StreetType type = this.city.getNode(i, j).getStreetType();
+                for (int j = 0; j < this.matrix.getDimensionY(); j++) {
+                    StreetType type = this.matrix.getNode(i, j).getStreetType();
                     String[] lines = type.getLines();
                     String fragment = (line < lines.length ? lines[line] : "");
                     System.out.print(String.format("%-" + maxWidth + "s", fragment));
@@ -79,13 +82,13 @@ public class City {
     }
     
     private void updateCityTemplate() {
-        NodeMatrix<Intersection> aux = this.city.getRoot();
-        for (int i = 0; i < this.city.getDimensionY(); i++) {
-            for (int j = 0; j < this.city.getDimensionX(); j++) {
+        NodeMatrix<Intersection> aux = this.matrix.getRoot();
+        for (int i = 0; i < this.matrix.getDimensionY(); i++) {
+            for (int j = 0; j < this.matrix.getDimensionX(); j++) {
                 this.setStreetType(aux);
                 aux = aux.getNext();
             }
-            aux = this.city.getNode(i, 0);
+            aux = this.matrix.getNode(i, 0);
             aux = aux.getBottom();
         }
     }
@@ -121,19 +124,19 @@ public class City {
                 case BLOQUEO, CRUCE_CERRADO, VEHICULO_VARADO -> node.setStreetType(StreetType.CRUCE_ESQUINA_3_NO_LIBRE);
                 case LIBRE, CRUCE_LIBRE, VEHICULOS_TRANSITANDO -> node.setStreetType(StreetType.CRUCE_ESQUINA_3);
             }
-        } else if (node.getX() == this.city.getDimensionX() - 1 && node.getNext() != null) {
+        } else if (node.getX() == this.matrix.getDimensionX() - 1 && node.getNext() != null) {
             switch (node.getData().getIntersectionType()) {
                 case SEMAFORO_ROJO, SEMAFORO_VERDE -> node.setStreetType(StreetType.CRUCE_SUR_SEMAFORO);
                 case BLOQUEO, CRUCE_CERRADO, VEHICULO_VARADO -> node.setStreetType(StreetType.CRUCE_SUR_NO_LIBRE);
                 case LIBRE, CRUCE_LIBRE, VEHICULOS_TRANSITANDO -> node.setStreetType(StreetType.CRUCE_SUR);
             }
-        } else if (node.getY() == this.city.getDimensionY() - 1 && node.getBottom() != null) {
+        } else if (node.getY() == this.matrix.getDimensionY() - 1 && node.getBottom() != null) {
             switch (node.getData().getIntersectionType()) {
                 case SEMAFORO_ROJO, SEMAFORO_VERDE -> node.setStreetType(StreetType.CRUCE_DERECHA_SEMAFORO);
                 case BLOQUEO, CRUCE_CERRADO, VEHICULO_VARADO -> node.setStreetType(StreetType.CRUCE_DERECHA_NO_LIBRE);
                 case LIBRE, CRUCE_LIBRE, VEHICULOS_TRANSITANDO -> node.setStreetType(StreetType.CRUCE_DERECHA);
             }
-        } else if (node.getX() == this.city.getDimensionX() - 1 && node.getY() == this.city.getDimensionY() - 1) {
+        } else if (node.getX() == this.matrix.getDimensionX() - 1 && node.getY() == this.matrix.getDimensionY() - 1) {
             switch (node.getData().getIntersectionType()) {
                 case SEMAFORO_ROJO, SEMAFORO_VERDE -> node.setStreetType(StreetType.CRUCE_ESQUINA_4_SEMAFORO);
                 case BLOQUEO, CRUCE_CERRADO, VEHICULO_VARADO -> node.setStreetType(StreetType.CRUCE_ESQUINA_4_NO_LIBRE);
