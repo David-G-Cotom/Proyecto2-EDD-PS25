@@ -4,6 +4,8 @@
  */
 package com.mycompany.proyecto2_edd_ps25.structs.tree;
 
+import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
+
 /**
  *
  * @author Carlos Cotom
@@ -26,21 +28,21 @@ public class AVLTree<T> {
     }
     
     public void insert(TreeNode newNode) {
-        this.insert(newNode, this.root);
+        this.root = this.insert(newNode, this.root);
     }
     
-    private void insert(TreeNode node, TreeNode root) {
+    private TreeNode insert(TreeNode node, TreeNode root) {
         if (root == null) {
-            root = node;
-            root.setBalanceFactor(this.obtainBalanceFactor(root));
-            return;
+            node.setBalanceFactor(this.obtainBalanceFactor(node));
+            //root = node;
+            return node;
         }
         if (node.getSize() < root.getSize()) {
-            this.insert(node, root.getLeft());
+            root.setLeft(this.insert(node, root.getLeft()));
         } else {
-            this.insert(node, root.getRight());
+            root.setRight(this.insert(node, root.getRight()));
         }
-        this.balanceTree(root);
+        return this.balanceTree(root);
     }
     
     private int obtainBalanceFactor(TreeNode node) {
@@ -57,92 +59,94 @@ public class AVLTree<T> {
         return 1 + (leftHeight > rightHeight ? leftHeight: rightHeight);
     }
     
-    private void balanceTree(TreeNode root) {
+    private TreeNode balanceTree(TreeNode root) {
         root.setBalanceFactor(this.obtainBalanceFactor(root));
         if (root.getBalanceFactor() < -1) {
             if (root.getLeft().getBalanceFactor() > 0) {
-                this.doubleRightRotation(root);
-                return;
+                return this.doubleRightRotation(root);
             }
-            this.rightRotation(root);
-            return;
+            return this.rightRotation(root);
         }
         if (root.getBalanceFactor() > 1) {
             if (root.getRight().getBalanceFactor() < 0) {
-                this.doubleLeftRotation(root);
-                return;
+                return this.doubleLeftRotation(root);
             }
-            this.leftRotation(root);
+            return this.leftRotation(root);
         }
+        return root;
     }
     
-    private void doubleRightRotation(TreeNode node) {
-        this.leftRotation(node.getLeft());
-        this.rightRotation(node);
+    private TreeNode doubleRightRotation(TreeNode node) {
+        node.setLeft(this.leftRotation(node.getLeft()));
+        return this.rightRotation(node);
     }
     
-    private void rightRotation(TreeNode node) {
+    private TreeNode rightRotation(TreeNode node) {
         TreeNode aux = node.getLeft();
         node.setLeft(aux.getRight());
         aux.setRight(node);
-        node = aux;
+        //node = aux;
         node.setBalanceFactor(this.obtainBalanceFactor(node));
-        node.getRight().setBalanceFactor(this.obtainBalanceFactor(node.getRight()));
-        if (node.getLeft() == null) return;
+        aux.setBalanceFactor(this.obtainBalanceFactor(aux));
+        return aux;
+        //node.getRight().setBalanceFactor(this.obtainBalanceFactor(node.getRight()));
+        //if (node.getLeft() == null) return null;
         
-        node.getLeft().setBalanceFactor(this.obtainBalanceFactor(node.getLeft()));
+        //node.getLeft().setBalanceFactor(this.obtainBalanceFactor(node.getLeft()));
     }
     
-    private void doubleLeftRotation(TreeNode node) {
-        this.rightRotation(node.getRight());
-        this.leftRotation(node);
+    private TreeNode doubleLeftRotation(TreeNode node) {
+        node.setRight(this.rightRotation(node.getRight()));
+        return this.leftRotation(node);
     }
     
-    private void leftRotation(TreeNode node) {
+    private TreeNode leftRotation(TreeNode node) {
         TreeNode aux = node.getRight();
         node.setRight(aux.getLeft());
         aux.setLeft(node);
-        node = aux;
+        //node = aux;
         node.setBalanceFactor(this.obtainBalanceFactor(node));
-        node.getLeft().setBalanceFactor(this.obtainBalanceFactor(node.getLeft()));
-        if (node.getRight() == null) return;
+        aux.setBalanceFactor(this.obtainBalanceFactor(aux));
+        return aux;
+        //node.getLeft().setBalanceFactor(this.obtainBalanceFactor(node.getLeft()));
+        //if (node.getRight() == null) return null;
         
-        node.getRight().setBalanceFactor(this.obtainBalanceFactor(node.getRight()));
+        //node.getRight().setBalanceFactor(this.obtainBalanceFactor(node.getRight()));
     }
     
     public void delete(int size, String id) {
-        this.delete(size, this.root, id);
+        this.root = this.delete(size, this.root, id);
     }
     
-    private void delete(int size, TreeNode root, String id) {
-        if (root == null) return;
-        
-        if (size == root.getSize() && id.equals(root.getId())) {
-            if (this.isLeaf(root)) {
-                root = null;
-                return;
-            }
-            if (root.getLeft() == null) {
-                root = root.getRight();
-                return;
-            }
-            if (root.getRight() == null) {
-                root = root.getLeft();
-                return;
-            }
-            TreeNode rightNode = this.getMajorNode(root.getLeft());
-            root.setData(rightNode.getData());
-            root.setSize(rightNode.getSize());
-            this.delete(rightNode.getSize(), root.getLeft(), id);
-            size = root.getSize();
+    private TreeNode delete(int size, TreeNode root, String id) {
+        if (root == null) {
+            //System.out.println("Nodo con valor: " + size + " e ID: " + id + " no se encontro para eliminar");
+            return null;
         }
         if (size < root.getSize()) {
-            this.delete(size, root.getLeft(), id);
+            root.setLeft(this.delete(size, root.getLeft(), id));
+        } else if (size > root.getSize()) {
+            root.setRight(this.delete(size, root.getRight(), id));
+        } else {
+            if (id.equals(root.getId())) {
+                if (this.isLeaf(root)) return null;
+                if (root.getLeft() == null) return root.getRight();
+                if (root.getRight() == null) return root.getLeft();
+                
+                TreeNode rightNode = this.getMajorNode(root.getLeft());
+                root.setData(rightNode.getData());
+                root.setSize(rightNode.getSize());
+                root.setId(rightNode.getId());
+                root.setLeft(this.delete(rightNode.getSize(), root.getLeft(), rightNode.getId()));
+            } else {
+                //System.out.println("Nodo con valor: " + size + "coincide, pero ID: " + id + " no. Buscando/Eliminando derecha...");
+                root.setRight(this.delete(size, root.getRight(), id));
+                //System.out.println("Nodo con valor: " + size + "coincide, pero ID: " + id + " no. Buscando/Eliminando izquierda...");
+                root.setLeft(this.delete(size, root.getLeft(), id));
+            }
+            //size = root.getSize();
         }
-        if (size >= root.getSize()) {
-            this.delete(size, root.getRight(), id);
-        }
-        this.balanceTree(root);
+        return this.balanceTree(root);
     }
     
     public boolean isLeaf(TreeNode node) {
@@ -150,10 +154,20 @@ public class AVLTree<T> {
     }
     
     public void updateNode(int size, int newSize, String id) {
-        TreeNode node = this.search(size, id);
+        LinkedList<TreeNode> nodesFound = this.search(size);
+        TreeNode node = null;
+        TreeNode aux;
+        for (int i = 0; i < nodesFound.getSize(); i++) {
+            aux = nodesFound.getElementAt(i).getData();
+            if (aux.getId().equals(id)) {
+                node = aux;
+                break;
+            }
+        }
         if (node != null) {
             TreeNode updatedNode = new TreeNode(node.getData());
             updatedNode.setSize(newSize);
+            updatedNode.setId(id);
             this.delete(size, id);
             this.insert(updatedNode);
         }
@@ -166,35 +180,46 @@ public class AVLTree<T> {
         return getMajorNode(node.getRight());
     }
     
-    public TreeNode search(int size, String id) {
-        return this.search(size, this.root, id);
+    public LinkedList<TreeNode> search(int size) {
+        LinkedList<TreeNode> nodesFound = new LinkedList<>();
+        this.search(size, root, nodesFound);
+        return nodesFound;
     }
     
-    private TreeNode search(int size, TreeNode node, String id) {
+    private void search(int size, TreeNode node, LinkedList<TreeNode> list) {
         if (node != null) {
-            if (size == node.getSize() && id.equals(node.getId())) return node;
-
             if (size < node.getSize()) {
-                return this.search(size, node.getLeft(), id);
-            }
-            if (size >= node.getSize()) {
-                return this.search(size, node.getRight(), id);
+                this.search(size, node.getLeft(), list);
+            } else if (size > node.getSize()) {
+                this.search(size, node.getRight(), list);
+            } else {
+                list.addElementAt(node);
+                this.search(size, node.getLeft(), list);
+                this.search(size, node.getRight(), list);
             }
         }
-        return null;
     }
     
-    public void print(TreeNode root, int space, int level) {
-        if (root == null) return;
-        
-        space += level;
-        this.print(root.getRight(), space, level);
-        System.out.println("");
-        for (int i = level; i < space; i++) {
-            System.out.println(" ");
+    public void print(int indentIncrement) {
+        System.out.println("\n--- Arbol AVL Visual ---");
+        if (this.root == null) {
+            System.out.println("(Árbol vacío)");
+        } else {
+            print(this.root, 0, indentIncrement);
         }
-        System.out.println(root.getData() + "(" + root.getData() + ")");
-        this.print(root.getLeft(), space, level);
+        System.out.println("\n");
+    }
+    
+    private void print(TreeNode node, int space, int level) {
+        if (node == null) return;
+
+        int newSpace = space + level;
+        print(node.getRight(), newSpace, level);
+        System.out.println();
+        for (int i = 0; i < space; i++) System.out.print(" ");
+         
+        System.out.print("" + node.getData() + node.getBalanceFactor());
+        print(node.getLeft(), newSpace, level);
     }
     
 }

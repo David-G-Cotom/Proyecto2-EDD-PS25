@@ -57,7 +57,7 @@ public class OrthogonalMatrix<T> {
             this.connectNodes(aux, i);
             aux = this.getNode(i, 0);
             String coordinateLetter = this.utilities.convertCoordinate(i + 1);
-            String coordinateNumber = "0";
+            String coordinateNumber = "1";
             NodeMatrix newNode = new NodeMatrix<>(new Intersection(coordinateLetter + coordinateNumber), i + 1, 0);
             aux.setBottom(newNode);
             newNode.setTop(aux);
@@ -69,7 +69,7 @@ public class OrthogonalMatrix<T> {
     private void connectNodes(NodeMatrix<T> aux, int i) {
         for (int j = 0; j < this.dimensionY - 1; j++) {
             String coordinateLetter = this.utilities.convertCoordinate(i);
-            String coordinateNumber = String.valueOf(j + 1);
+            String coordinateNumber = String.valueOf(j + 2);
             NodeMatrix newNode = new NodeMatrix<>(new Intersection(coordinateLetter + coordinateNumber), i, j + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
@@ -103,12 +103,12 @@ public class OrthogonalMatrix<T> {
         }
         if (incrementX > 0) {
             for (int i = this.dimensionX; i < this.dimensionX + incrementX; i++) {
-                aux = this.getNode(this.dimensionX - 1, 0);
-                String coordinateLetter = this.utilities.convertCoordinate(this.dimensionX);
-                String coordinateNumber = String.valueOf(0);
+                aux = this.getNode(i - 1, 0);
+                String coordinateLetter = this.utilities.convertCoordinate(i);
+                String coordinateNumber = "1";
                 Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
                 newIntersections.addElementAt(newIntersection);
-                NodeMatrix newNode = new NodeMatrix(newIntersection, this.dimensionX, 0);
+                NodeMatrix newNode = new NodeMatrix(newIntersection, i, 0);
                 newNode.setTop(aux);
                 aux.setBottom(newNode);
                 aux = newNode;
@@ -122,7 +122,7 @@ public class OrthogonalMatrix<T> {
     private void incrementColumns(NodeMatrix<T> aux, int i, int incrementY, LinkedList<Intersection> newIntersections) {
         for (int j = 0; j < incrementY; j++) {
             String coordinateLetter = this.utilities.convertCoordinate(i);
-            String coordinateNumber = String.valueOf(aux.getY() + 1);
+            String coordinateNumber = String.valueOf(aux.getY() + 2);
             Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
             newIntersections.addElementAt(newIntersection);
             NodeMatrix newNode = new NodeMatrix(newIntersection, i, aux.getY() + 1);
@@ -139,7 +139,7 @@ public class OrthogonalMatrix<T> {
     private void incrementRows(NodeMatrix<T> aux, int i, int incrementY, LinkedList<Intersection> newIntersections) {
         for (int j = 0; j < this.dimensionY + incrementY - 1; j++) {
             String coordinateLetter = this.utilities.convertCoordinate(i);
-            String coordinateNumber = String.valueOf(j + 1);
+            String coordinateNumber = String.valueOf(j + 2);
             Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
             newIntersections.addElementAt(newIntersection);
             NodeMatrix newNode = new NodeMatrix(newIntersection, i, j + 1);

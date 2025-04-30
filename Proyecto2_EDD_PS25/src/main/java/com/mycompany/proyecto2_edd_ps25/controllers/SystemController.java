@@ -10,6 +10,7 @@ import com.mycompany.proyecto2_edd_ps25.models.Vehicle;
 import com.mycompany.proyecto2_edd_ps25.models.VehicleType;
 import com.mycompany.proyecto2_edd_ps25.structs.hash.HashTable;
 import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
+import com.mycompany.proyecto2_edd_ps25.structs.matrix.NodeMatrix;
 import com.mycompany.proyecto2_edd_ps25.structs.tree.AVLTree;
 import com.mycompany.proyecto2_edd_ps25.utils.Utilities;
 import com.mycompany.proyecto2_edd_ps25.utils.Posters;
@@ -40,6 +41,7 @@ public class SystemController {
         this.avlTree = new AVLTree<>();
         this.intersectionsController = new IntersectionController(this.city, this.avlTree);
         this.newsIntersections = new LinkedList<>();
+        this.avlTree.print(5);
     }
     
     private void enterVechicle() {
@@ -59,7 +61,8 @@ public class SystemController {
             this.intersectionsController.updateTree(this.newsIntersections);
             this.newsIntersections.clearList();
         }
-        this.city.putVehicle(newVechicle, originCoordinates);
+        NodeMatrix<Intersection> node = this.city.putVehicle(newVechicle, originCoordinates);
+        this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
         System.out.println("Vehiculo Registrado en el Sistema");
     }
     
@@ -96,12 +99,14 @@ public class SystemController {
                 }
                 for (int i = 0; i < this.coordinates.getSize(); i+=2) {
                     Vehicle vehicle = this.vehicles.getElementAt(i/2).getData();
-                    this.city.putVehicle(vehicle, this.coordinates.getElementAt(i).getData());
+                    NodeMatrix<Intersection> node = this.city.putVehicle(vehicle, this.coordinates.getElementAt(i).getData());
+                    this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
                     this.hashTable.insert(vehicle.getPlate(), vehicle);
                 }
             }
         }
         this.city.printCity();
+        this.avlTree.print(5);
     }
     
     public void registerEvent() {

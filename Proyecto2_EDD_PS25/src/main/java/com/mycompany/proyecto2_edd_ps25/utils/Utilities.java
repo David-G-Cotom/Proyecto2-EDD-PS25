@@ -76,14 +76,15 @@ public class Utilities {
     }
     
     public String convertCoordinate(int value) {
-        String coordinate = "";
-        int letterDimensions = 26;
-        int dimensions = value / letterDimensions;
-        int residue = value % letterDimensions;
-        for (int i = 0; i < dimensions; i++) coordinate += "A";
+        StringBuilder result = new StringBuilder();
+        int letters = 26;
+        int dimensions = value / letters;
+        for (int i = 0; i < dimensions; i++) result.append("A");
         
-        coordinate += 'A' + residue - 1;
-        return coordinate;
+        int residue = value % letters;
+        char c = (char) ('A' + residue);
+        result.append(c);
+        return result.toString();
     }
 
 }

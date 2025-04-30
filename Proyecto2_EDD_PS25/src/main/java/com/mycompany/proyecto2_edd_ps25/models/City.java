@@ -41,8 +41,10 @@ public class City {
         return false;
     }
     
-    public void putVehicle(Vehicle newVehicle, int[] origin) {
-        this.matrix.getNode(origin[0], origin[1]).getData().incraseComplexity(newVehicle);
+    public NodeMatrix<Intersection> putVehicle(Vehicle newVehicle, int[] origin) {
+        NodeMatrix<Intersection> node = this.matrix.getNode(origin[0] - 1, origin[1] - 1);
+        node.getData().incraseComplexity(newVehicle);
+        return node;
     }
     
     public void printCity() {
