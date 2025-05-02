@@ -16,9 +16,11 @@ import com.mycompany.proyecto2_edd_ps25.structs.matrix.StreetType;
 public class City {
     
     private OrthogonalMatrix<Intersection> matrix;
+    private int incrasedCongestion;
 
     public City(int dimensionX, int dimensionY) {
         this.matrix = new OrthogonalMatrix<>(dimensionX, dimensionY);
+        this.incrasedCongestion = this.matrix.getIncrasedCongestion();
         this.updateCityTemplate();
     }
 
@@ -29,12 +31,21 @@ public class City {
     public void setMatrix(OrthogonalMatrix<Intersection> matrix) {
         this.matrix = matrix;
     }
+
+    public int getIncrasedCongestion() {
+        return incrasedCongestion;
+    }
+
+    public void setIncrasedCongestion(int incrasedCongestion) {
+        this.incrasedCongestion = incrasedCongestion;
+    }
     
     public boolean checkDimensions(int rowDimensions, int columnDimensions, LinkedList<Intersection> newIntersections) {
         int incrementX = rowDimensions - this.matrix.getDimensionX();
         int incrementY = columnDimensions - this.matrix.getDimensionY();
         if (incrementX > 0 || incrementY > 0) {
             this.matrix.incraseMatrix(incrementX, incrementY, newIntersections);
+            if (this.incrasedCongestion < this.matrix.getIncrasedCongestion()) this.incrasedCongestion = this.matrix.getIncrasedCongestion();
             this.updateCityTemplate();
             return true;
         }
@@ -81,6 +92,7 @@ public class City {
                 System.out.println();
             }
         }
+        System.out.println("");
     }
     
     private void updateCityTemplate() {

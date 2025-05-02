@@ -56,7 +56,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "vehicleInvolved=" + vehicleInvolved + ", priorityAttended=" + priorityAttended + ", passingTime=" + passingTime + ", description=" + description + '}';
+        return "Event{" + "vehicleInvolved=" + vehicleInvolved + "\n\tpriorityAttended=" + priorityAttended + ", passingTime=" + passingTime + ", description=" + description + '}';
     }    
     
 }

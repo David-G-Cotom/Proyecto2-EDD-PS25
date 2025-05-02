@@ -5,6 +5,7 @@
 package com.mycompany.proyecto2_edd_ps25.models;
 
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.IntersectionComplexityType;
+import com.mycompany.proyecto2_edd_ps25.structs.queue.NodeQueue;
 import com.mycompany.proyecto2_edd_ps25.structs.queue.PriorityQueue;
 
 /**
@@ -68,9 +69,21 @@ public class Intersection {
         this.complexity++;
     }
     
-    public void reduceComplexity() {
-        this.vehiclesWaiting.unqueue();
+    public Vehicle reduceComplexity() {
         this.complexity--;
+        return this.vehiclesWaiting.unqueue();
+    }
+    
+    public void printIntersection() {
+        System.out.println("Interseccion: " + this.id);
+        System.out.println("\tComplejidad: " + this.complexity);
+        System.out.println("\tTipo de Interseccion: " + this.intersectionType.toString());
+        System.out.println("\tVehiculos en Espera:");
+        NodeQueue<Vehicle> vehicles = this.vehiclesWaiting.getHead();
+        while (vehicles != null) {
+            System.out.println("\t\t" + vehicles.getData().toString());
+            vehicles = vehicles.getNext();
+        }
     }
     
 }

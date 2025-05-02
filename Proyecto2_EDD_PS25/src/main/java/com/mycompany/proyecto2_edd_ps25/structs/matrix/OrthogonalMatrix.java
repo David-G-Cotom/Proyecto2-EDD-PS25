@@ -18,11 +18,14 @@ public class OrthogonalMatrix<T> {
     private NodeMatrix root; //Nodo en la posicion (0,0)
     int dimensionX, dimensionY;
     private final Utilities utilities;
+    private int incrasedCongestion;
 
     public OrthogonalMatrix(int dimensionX, int dimensionY) {
         this.dimensionX = dimensionX;
         this.dimensionY = dimensionY;
-        this.root = new NodeMatrix<>(new Intersection("A1"), 0, 0);
+        Intersection newIntersection = new Intersection("A1");
+        this.incrasedCongestion = newIntersection.getComplexity();
+        this.root = new NodeMatrix<>(newIntersection, 0, 0);
         this.utilities = new Utilities();
         this.createOrthogonalMatrix();
     }
@@ -50,6 +53,14 @@ public class OrthogonalMatrix<T> {
     public void setDimensionY(int dimensionY) {
         this.dimensionY = dimensionY;
     }
+
+    public int getIncrasedCongestion() {
+        return incrasedCongestion;
+    }
+
+    public void setIncrasedCongestion(int incrasedCongestion) {
+        this.incrasedCongestion = incrasedCongestion;
+    }
     
     private void createOrthogonalMatrix() {
         NodeMatrix<T> aux = this.root;
@@ -58,7 +69,9 @@ public class OrthogonalMatrix<T> {
             aux = this.getNode(i, 0);
             String coordinateLetter = this.utilities.convertCoordinate(i + 1);
             String coordinateNumber = "1";
-            NodeMatrix newNode = new NodeMatrix<>(new Intersection(coordinateLetter + coordinateNumber), i + 1, 0);
+            Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
+            if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
+            NodeMatrix newNode = new NodeMatrix<>(newIntersection, i + 1, 0);
             aux.setBottom(newNode);
             newNode.setTop(aux);
             aux = newNode;
@@ -70,7 +83,9 @@ public class OrthogonalMatrix<T> {
         for (int j = 0; j < this.dimensionY - 1; j++) {
             String coordinateLetter = this.utilities.convertCoordinate(i);
             String coordinateNumber = String.valueOf(j + 2);
-            NodeMatrix newNode = new NodeMatrix<>(new Intersection(coordinateLetter + coordinateNumber), i, j + 1);
+            Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
+            if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
+            NodeMatrix newNode = new NodeMatrix<>(newIntersection, i, j + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
             if (i > 0) {
@@ -107,6 +122,7 @@ public class OrthogonalMatrix<T> {
                 String coordinateLetter = this.utilities.convertCoordinate(i);
                 String coordinateNumber = "1";
                 Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
+                if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
                 newIntersections.addElementAt(newIntersection);
                 NodeMatrix newNode = new NodeMatrix(newIntersection, i, 0);
                 newNode.setTop(aux);
@@ -124,6 +140,7 @@ public class OrthogonalMatrix<T> {
             String coordinateLetter = this.utilities.convertCoordinate(i);
             String coordinateNumber = String.valueOf(aux.getY() + 2);
             Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
+            if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
             newIntersections.addElementAt(newIntersection);
             NodeMatrix newNode = new NodeMatrix(newIntersection, i, aux.getY() + 1);
             aux.setNext(newNode);
@@ -141,6 +158,7 @@ public class OrthogonalMatrix<T> {
             String coordinateLetter = this.utilities.convertCoordinate(i);
             String coordinateNumber = String.valueOf(j + 2);
             Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
+            if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
             newIntersections.addElementAt(newIntersection);
             NodeMatrix newNode = new NodeMatrix(newIntersection, i, j + 1);
             aux.setNext(newNode);

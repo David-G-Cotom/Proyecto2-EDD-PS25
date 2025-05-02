@@ -64,6 +64,29 @@ public class Posters {
         }
         return option;
     }
+    
+    public int enterVehicleMenu() {
+        int option;
+        while (true) {
+            System.out.println("-------- QUIERE INGRESAR UN VEHICULO? --------");
+            System.out.println("                    1.Si                      ");
+            System.out.println("                    2.No                      ");
+            System.out.println("----------------------------------------------");
+            System.out.print("Ingrese la opcion aqui: ");
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                this.warningNumericFormat();
+                continue;
+            }
+            if (option != 1 && option != 2) {
+                System.out.println("Opcion Invalida!!!");
+                continue;
+            }
+            break;
+        }
+        return option;
+    }
 
     public VehicleType incomeType() {
         VehicleType vehicleType;
@@ -226,6 +249,29 @@ public class Posters {
         System.out.println("          Debe ingresar un valor numerico         ");
         System.out.println("              (Vuelva a intentarlo)               ");
         System.out.println("--------------------------------------------------");
+    }
+    
+    public int simulationType() {
+        int option;
+        while (true) {
+            System.out.println("--------------- TIPO DE SIMULACION ---------------");
+            System.out.println("                    1.Manual                      ");
+            System.out.println("                    2.Automatica                  ");
+            System.out.println("--------------------------------------------------");
+            System.out.print("Ingrese su opcion aqui: ");
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                this.warningNumericFormat();
+                continue;
+            }
+            if (option != 1 && option != 2) {
+                System.out.println("Opcion Invalida!!!");
+                continue;
+            }
+            break;
+        }
+        return option;
     }
 
 }

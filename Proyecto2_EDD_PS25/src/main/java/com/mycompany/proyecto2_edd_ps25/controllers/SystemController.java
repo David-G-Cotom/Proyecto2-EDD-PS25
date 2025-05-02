@@ -5,15 +5,19 @@
 package com.mycompany.proyecto2_edd_ps25.controllers;
 
 import com.mycompany.proyecto2_edd_ps25.models.City;
+import com.mycompany.proyecto2_edd_ps25.models.Event;
 import com.mycompany.proyecto2_edd_ps25.models.Intersection;
 import com.mycompany.proyecto2_edd_ps25.models.Vehicle;
 import com.mycompany.proyecto2_edd_ps25.models.VehicleType;
 import com.mycompany.proyecto2_edd_ps25.structs.hash.HashTable;
 import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.NodeMatrix;
+import com.mycompany.proyecto2_edd_ps25.structs.stack.Stack;
 import com.mycompany.proyecto2_edd_ps25.structs.tree.AVLTree;
+import com.mycompany.proyecto2_edd_ps25.structs.tree.TreeNode;
 import com.mycompany.proyecto2_edd_ps25.utils.Utilities;
 import com.mycompany.proyecto2_edd_ps25.utils.Posters;
+import java.util.Scanner;
 
 /**
  *
@@ -30,6 +34,10 @@ public class SystemController {
     private AVLTree<Intersection> avlTree;
     private IntersectionController intersectionsController;
     private LinkedList<Intersection> newsIntersections;
+    private Stack<Event> recordedEvents;
+    private int vehiclesInTheCity;
+    
+    private final Scanner scanner = new Scanner(System.in);
 
     public SystemController() {
         this.posters = new Posters();
@@ -41,7 +49,8 @@ public class SystemController {
         this.avlTree = new AVLTree<>();
         this.intersectionsController = new IntersectionController(this.city, this.avlTree);
         this.newsIntersections = new LinkedList<>();
-        this.avlTree.print(5);
+        this.recordedEvents = new Stack<>();
+        this.vehiclesInTheCity = 0;
     }
     
     private void enterVechicle() {
@@ -63,11 +72,53 @@ public class SystemController {
         }
         NodeMatrix<Intersection> node = this.city.putVehicle(newVechicle, originCoordinates);
         this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
+        if (this.city.getIncrasedCongestion() < node.getData().getComplexity()) this.city.setIncrasedCongestion(node.getData().getComplexity());
+        this.vehiclesInTheCity++;
         System.out.println("Vehiculo Registrado en el Sistema");
     }
     
-    public void processVehicle() {
-        
+    private void enterFile() {
+        this.utilities.readTrafficFile("trafico.csv", this.vehicles, this.coordinates);
+        this.vehiclesInTheCity += this.vehicles.getSize();
+        int dimensionX = 0, dimensionY = 0;
+        for (int i = 0; i < this.coordinates.getSize(); i++) {
+            int[] coordinate = this.coordinates.getElementAt(i).getData();
+            int currentX = coordinate[0];
+            if (currentX > dimensionX) dimensionX = currentX;
+
+            int currentY = coordinate[1];
+            if (currentY > dimensionY) dimensionY = currentY;
+        }
+        if (this.city.checkDimensions(dimensionX, dimensionY, this.newsIntersections)) {
+            this.intersectionsController.updateTree(this.newsIntersections);
+            this.newsIntersections.clearList();
+        }
+        for (int i = 0; i < this.coordinates.getSize(); i+=2) {
+            Vehicle vehicle = this.vehicles.getElementAt(i/2).getData();
+            NodeMatrix<Intersection> node = this.city.putVehicle(vehicle, this.coordinates.getElementAt(i).getData());
+            this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
+            if (this.city.getIncrasedCongestion() < node.getData().getComplexity()) this.city.setIncrasedCongestion(node.getData().getComplexity());
+            this.hashTable.insert(vehicle.getPlate(), vehicle);
+        }
+    }
+    
+    private void processIntersection(Intersection intersection) {
+        //SE ACTUALIZA LA INTERSECCION ANTERIOR DEL VEHICULO
+        Vehicle vehicle = intersection.reduceComplexity();
+        //SE ACTUALIZA EL AVL
+        this.avlTree.updateNode(intersection.getComplexity() + 1, intersection.getComplexity(), intersection.getId());
+        //EL VEHICULO TIENE QUE MOVERSE
+        vehicle.updateCurrentCoordinate();
+        if (vehicle.getIsAtDestination()) {
+            this.registerEvent(vehicle, intersection, null);
+            this.vehiclesInTheCity--;
+        } else {
+            //SE ACTUALIZA LA INTERSECCION NUEVA DEL VEHICULO
+            NodeMatrix<Intersection> newNode = this.city.putVehicle(vehicle, vehicle.getCurrentCoordinate());
+            //SE ACTUALIZA EL AVL
+            this.avlTree.updateNode(newNode.getData().getComplexity() - 1, newNode.getData().getComplexity(), newNode.getData().getId());
+            this.registerEvent(vehicle, intersection, newNode.getData());
+        }
     }
     
     public void execute() {
@@ -82,35 +133,86 @@ public class SystemController {
         int option = this.posters.menuOrderVehicles();
         switch (option) {
             case 1 -> this.enterVechicle();
-            case 2 -> {
-                this.utilities.readTrafficFile("trafico.csv", this.vehicles, this.coordinates);
-                int dimensionX = 0, dimensionY = 0;
-                for (int i = 0; i < this.coordinates.getSize(); i++) {
-                    int[] coordinate = this.coordinates.getElementAt(i).getData();
-                    int currentX = coordinate[0];
-                    if (currentX > dimensionX) dimensionX = currentX;
-                    
-                    int currentY = coordinate[1];
-                    if (currentY > dimensionY) dimensionY = currentY;
-                }
-                if (this.city.checkDimensions(dimensionX, dimensionY, this.newsIntersections)) {
-                    this.intersectionsController.updateTree(this.newsIntersections);
-                    this.newsIntersections.clearList();
-                }
-                for (int i = 0; i < this.coordinates.getSize(); i+=2) {
-                    Vehicle vehicle = this.vehicles.getElementAt(i/2).getData();
-                    NodeMatrix<Intersection> node = this.city.putVehicle(vehicle, this.coordinates.getElementAt(i).getData());
-                    this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
-                    this.hashTable.insert(vehicle.getPlate(), vehicle);
-                }
-            }
+            case 2 -> this.enterFile();
         }
         this.city.printCity();
-        this.avlTree.print(5);
+        System.out.println("---------- INICIO DE LA SIMULACION DE TRAFICO ----------");
+        while (this.vehiclesInTheCity > 0) {
+            int option2 = this.posters.simulationType();
+            switch (option2) {
+                case 1 -> this.manualSimulation();
+                case 2 -> this.automaticSimulation();
+            }
+            int option3 = this.posters.enterVehicleMenu();
+            if (option3 == 1) this.enterVechicle();
+        }
+        System.out.println("---------- SIMULACION TERMINADA ----------");
     }
     
-    public void registerEvent() {
-        
+    private void manualSimulation() {
+        System.out.println("----------- SIMULACION DE TRAFICO MANUAL -----------");
+        System.out.println("-------- INTERSECCIONES MAS CONGESTIONADAS --------");
+        boolean thereAreIntersections = false;
+        int congestion = this.city.getIncrasedCongestion();
+        while (!thereAreIntersections && congestion > 0) {
+            LinkedList<TreeNode> mostCongestedIntersections = this.avlTree.search(congestion);
+            for (int i = 0; i < mostCongestedIntersections.getSize(); i++) {
+                Intersection intersection = (Intersection) mostCongestedIntersections.getElementAt(i).getData().getData();
+                if (!intersection.getVehiclesWaiting().isEmpty()) {
+                    intersection.printIntersection();
+                    thereAreIntersections = true;
+                }
+            }
+            congestion--;
+        }
+        System.out.println("----- QUE INTERSECCION QUIERE LIBERAR? -----");
+        System.out.print("Ingrese su opcion aqui: ");
+        String coordinate = this.scanner.nextLine().toUpperCase();
+        //BUSCAR LA INTERSECCION DENTRO DE LA MATRIZ
+        int[] coordinateNumber = this.utilities.convertCoordinate(coordinate);
+        NodeMatrix<Intersection> node = this.city.getMatrix().getNode(coordinateNumber[0] - 1, coordinateNumber[1] - 1);
+        this.processIntersection(node.getData());
+    }
+    
+    private void automaticSimulation() {
+        System.out.println("--------------- SIMULACION DE TRAFICO AUTOMATICA ---------------");
+        System.out.println("--- CUANTO TIEMPO/PASOS QUIERE AVANZAR EN LA SIMULACION? ---");
+        System.out.print("Ingrese su opcion aqui: ");
+        int cycles = Integer.parseInt(scanner.nextLine());
+        for (int i = 0; i < cycles; i++) {
+            if (this.vehiclesInTheCity <= 0) break;
+            boolean thereAreIntersections = false;
+            int congestion = this.city.getIncrasedCongestion();
+            while (!thereAreIntersections && congestion > 0) {
+                LinkedList<TreeNode> mostCongestedIntersections = this.avlTree.search(congestion);
+                for (int j = 0; j < mostCongestedIntersections.getSize(); j++) {
+                    Intersection intersection = (Intersection) mostCongestedIntersections.getElementAt(j).getData().getData();
+                    if (!intersection.getVehiclesWaiting().isEmpty()) {
+                        this.processIntersection(intersection);
+                        thereAreIntersections = true;
+                        break;
+                    }
+                }
+                congestion--;
+            }
+        }
+    }
+    
+    public void registerEvent(Vehicle vehicle, Intersection oldIntersection, Intersection newIntersection) {
+        String description;
+        if (newIntersection == null) {
+            description = "EL VEHICULO " + vehicle.getPlate() + " LLEGO A SU DESTINO";
+        } else {
+            description = "EL VEHICULO " + vehicle.getPlate() + " CRUZO DEL PUNTO " + oldIntersection.getId() + " AL PUNTO " + newIntersection.getId();
+        }
+        System.out.println(description);
+        System.out.println("");
+        int priorityAttended = oldIntersection.getComplexity() + 1;
+        for (int i : vehicle.getTotalPriority()) {
+            priorityAttended += i;
+        }
+        Event newEvent = new Event(vehicle, priorityAttended, vehicle.getWaitingTime(), description);
+        this.recordedEvents.push(newEvent);
     }
     
     public void generateReports() {
