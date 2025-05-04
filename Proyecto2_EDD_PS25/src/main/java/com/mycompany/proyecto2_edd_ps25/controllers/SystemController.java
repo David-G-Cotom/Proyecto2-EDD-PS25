@@ -252,15 +252,18 @@ public class SystemController {
     }
     
     public void generateReports() {
-        int option = this.posters.reportsMenu();
-        switch (option) {
-            case 1 -> this.reportsController.vehicleRanking(this.vehicles);
-            case 2 -> this.reportsController.numberOfVehiclesCrossed(this.city.getMatrix());
-            case 3 -> this.reportsController.averageVehicleWaitingTime(this.vehicles);
-            case 4 -> this.reportsController.intersectionGraph(this.avlTree);
-            case 5 -> this.reportsController.duplicatePlatesConflict(this.hashTable);
-            case 6 -> this.reportsController.latestRelevantEvents(this.recordedEvents);
-        }
+        int option;
+        do {
+            option = this.posters.reportsMenu();
+            switch (option) {
+                case 1 -> this.reportsController.vehicleRanking(this.vehicles);
+                case 2 -> this.reportsController.numberOfVehiclesCrossed(this.city.getMatrix());
+                case 3 -> this.reportsController.averageVehicleWaitingTime(this.vehicles);
+                case 4 -> this.reportsController.intersectionGraph(this.avlTree);
+                case 5 -> this.reportsController.duplicatePlatesConflict(this.hashTable);
+                case 6 -> this.reportsController.latestRelevantEvents(this.recordedEvents);
+            }
+        } while (option != 7);
     }
     
 }

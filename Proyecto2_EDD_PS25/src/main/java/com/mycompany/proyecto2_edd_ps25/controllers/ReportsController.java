@@ -51,8 +51,8 @@ public class ReportsController {
     public void numberOfVehiclesCrossed(OrthogonalMatrix<Intersection> matrix) {
         System.out.println("--------------- CANTIDAD DE VEHICULOS QUE HAN CRUZADO POR INTERSECCION ---------------");
         NodeMatrix<Intersection> aux = matrix.getRoot();
-        for (int i = 0; i < matrix.getDimensionY(); i++) {
-            for (int j = 0; j < matrix.getDimensionX(); j++) {
+        for (int i = 0; i < matrix.getDimensionX(); i++) {
+            for (int j = 0; j < matrix.getDimensionY(); j++) {
                 System.out.print("Interseccion: " + aux.getData().getId());
                 System.out.println(", cruzaron/han estado: " + aux.getData().getNumberOfVehiclesCrossed() + " vehiculos");
                 aux = aux.getNext();
@@ -143,7 +143,7 @@ public class ReportsController {
         System.out.println("--------------- PLACAS DUPLICADA/CONFLICTO ---------------");
         LinkedList<Vehicle> list = hashTable.getCollisions();
         if (list.isEmpty()) {
-            System.out.println("NO HAY PLACAS DUPLICADAS/CONFLICTO EN EL SISTEMA");
+            System.out.println("NO HAY PLACAS DUPLICADAS/CONFLICTO EN EL SISTEMA\n");
             return;
         }
         for (int i = 0; i < list.getSize(); i++) {

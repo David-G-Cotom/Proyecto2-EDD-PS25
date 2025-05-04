@@ -274,6 +274,7 @@ public class Posters {
             System.out.println("            4.Grafico de Intersecciones               ");
             System.out.println("            5.Placas Duplicadas o en Conflicto        ");
             System.out.println("            6.Registro de los Ultimos 20 Eventos      ");
+            System.out.println("            7.Omitir/Saltar                           ");
             System.out.println("------------------------------------------------------");
             System.out.print("Ingrese su opcion aqui: ");
             try {
@@ -282,7 +283,7 @@ public class Posters {
                 this.warningNumericFormat();
                 continue;
             }
-            if (!(option > 0 && option < 7)) {
+            if (!(option > 0 && option < 8)) {
                 System.out.println("Opcion Invalida!!!");
                 continue;
             }
