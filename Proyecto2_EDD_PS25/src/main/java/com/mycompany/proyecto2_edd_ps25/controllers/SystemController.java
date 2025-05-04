@@ -27,6 +27,7 @@ public class SystemController {
     
     private final Posters posters;
     private final Utilities utilities;
+    
     private LinkedList<Vehicle> vehicles;
     private LinkedList<int[]> coordinates;
     private City city;
@@ -36,6 +37,9 @@ public class SystemController {
     private LinkedList<Intersection> newsIntersections;
     private Stack<Event> recordedEvents;
     private int vehiclesInTheCity;
+    private ReportsController reportsController;
+    
+    private final String FILE_NAME = "trafico.csv";
     
     private final Scanner scanner = new Scanner(System.in);
 
@@ -51,6 +55,7 @@ public class SystemController {
         this.newsIntersections = new LinkedList<>();
         this.recordedEvents = new Stack<>();
         this.vehiclesInTheCity = 0;
+        this.reportsController = new ReportsController();
     }
     
     private void enterVechicle() {
@@ -74,11 +79,12 @@ public class SystemController {
         this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
         if (this.city.getIncrasedCongestion() < node.getData().getComplexity()) this.city.setIncrasedCongestion(node.getData().getComplexity());
         this.vehiclesInTheCity++;
-        System.out.println("Vehiculo Registrado en el Sistema");
+        this.vehicles.addElementAt(newVechicle);
+        System.out.println("Vehiculo Registrado en el Sistema\n");
     }
     
     private void enterFile() {
-        this.utilities.readTrafficFile("trafico.csv", this.vehicles, this.coordinates);
+        this.utilities.readTrafficFile(this.FILE_NAME, this.vehicles, this.coordinates);
         this.vehiclesInTheCity += this.vehicles.getSize();
         int dimensionX = 0, dimensionY = 0;
         for (int i = 0; i < this.coordinates.getSize(); i++) {
@@ -119,22 +125,24 @@ public class SystemController {
             this.avlTree.updateNode(newNode.getData().getComplexity() - 1, newNode.getData().getComplexity(), newNode.getData().getId());
             this.registerEvent(vehicle, intersection, newNode.getData());
         }
+        if (intersection.isCheckpoint()) {
+            System.out.println("LA INTERSECCION " + intersection.getId() + " ES UN PUNTO DE CONTROL");
+            int option = this.posters.menuViwReports();
+            if (option == 1) this.generateReports();
+        }
     }
     
     public void execute() {
         int option = this.posters.mainMenu();
         switch (option) {
             case 1 -> this.start();
-            case 2 -> System.out.println("Fin de la Simulacion");
+            case 2 -> System.out.println("---------- FIN DE LA APLICACION ----------");
         }
     }
     
     private void start() {
-        int option = this.posters.menuOrderVehicles();
-        switch (option) {
-            case 1 -> this.enterVechicle();
-            case 2 -> this.enterFile();
-        }
+        this.posters.initialConfiguration();
+        this.enterFile();
         this.city.printCity();
         System.out.println("---------- INICIO DE LA SIMULACION DE TRAFICO ----------");
         while (this.vehiclesInTheCity > 0) {
@@ -147,6 +155,11 @@ public class SystemController {
             if (option3 == 1) this.enterVechicle();
         }
         System.out.println("---------- SIMULACION TERMINADA ----------");
+        int option4 = this.posters.menuViwReports();
+        switch (option4) {
+            case 1 -> this.generateReports();
+            case 2 -> System.out.println("---------- CERRANDO SISTEMA ----------");
+        }
     }
     
     private void manualSimulation() {
@@ -216,7 +229,15 @@ public class SystemController {
     }
     
     public void generateReports() {
-        
+        int option = this.posters.reportsMenu();
+        switch (option) {
+            case 1 -> this.reportsController.vehicleRanking(this.vehicles);
+            case 2 -> this.reportsController.numberOfVehiclesCrossed(this.city.getMatrix());
+            case 3 -> this.reportsController.averageVehicleWaitingTime(this.vehicles);
+            case 4 -> this.reportsController.intersectionGraph(this.avlTree);
+            case 5 -> this.reportsController.duplicatePlatesConflict(this.hashTable);
+            case 6 -> this.reportsController.latestRelevantEvents(this.recordedEvents);
+        }
     }
     
 }

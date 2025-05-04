@@ -42,27 +42,14 @@ public class Posters {
         return option;
     }
 
-    public int menuOrderVehicles() {
-        int option;
-        while (true) {
-            System.out.println("--------------- CONFIGURACION INICIAL ---------------");
-            System.out.println("            1.Ingreso manual de vehiculos            ");
-            System.out.println("            2.Ingreso automatico con archivo         ");
-            System.out.println("-----------------------------------------------------");
-            System.out.print("Ingrese la opcion aqui: ");
-            try {
-                option = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                this.warningNumericFormat();
-                continue;
-            }
-            if (option != 1 && option != 2) {
-                System.out.println("Opcion Invalida!!!");
-                continue;
-            }
-            break;
-        }
-        return option;
+    public void initialConfiguration() {
+        System.out.println("------------------ CONFIGURACION INICIAL ------------------");
+        System.out.println("               Ingreso automatico de archivo               ");
+        System.out.println("                           NOTA:                           ");
+        System.out.println("   Asegurese que el archivo tenga el nombre trafico.csv    ");
+        System.out.println("-----------------------------------------------------------");
+        System.out.print("Click para continuar: ");
+        scanner.nextLine();
     }
     
     public int enterVehicleMenu() {
@@ -116,11 +103,10 @@ public class Posters {
     public String entrancePlate() {
         String plate;
         while (true) {
-            System.out.println("---------------------------- VEHICULO ----------------------------");
-            System.out.println("                  Ingrese la placa de su vehiculo                 ");
-            System.out.println("   (Cabe recalcar, que al introducir una placa ya registrada,  ");
-            System.out.println("no se tomara como nuevo vehiculo solo se actualizaran su datos)");
-            System.out.println("------------------------------------------------------------------");
+            System.out.println("-------------------- VEHICULO --------------------");
+            System.out.println("           Ingrese la placa de su vehiculo        ");
+            System.out.println("     Formato de Ejemplo: AAA-000A (8 caracteres)  ");
+            System.out.println("--------------------------------------------------");
             System.out.print("Ingrese la placa aqui: ");
             plate = scanner.nextLine().toUpperCase();
             if (plate.length() == 8) break;
@@ -266,6 +252,56 @@ public class Posters {
                 continue;
             }
             if (option != 1 && option != 2) {
+                System.out.println("Opcion Invalida!!!");
+                continue;
+            }
+            break;
+        }
+        return option;
+    }
+    
+    public int menuViwReports() {
+        int option;
+        while (true) {
+            System.out.println("---------- QUIERE VER REPORTES? ----------");
+            System.out.println("                   1.Si                   ");
+            System.out.println("                   2.No                   ");
+            System.out.println("------------------------------------------");
+            System.out.print("Ingrese la opcion aqui: ");
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                this.warningNumericFormat();
+                continue;
+            }
+            if (option != 1 && option != 2) {
+                System.out.println("Opcion Invalida!!!");
+                continue;
+            }
+            break;
+        }
+        return option;
+    }
+    
+    public int reportsMenu() {
+        int option;
+        while (true) {
+            System.out.println("--------------- REPORTES DE SIMULACION ---------------");
+            System.out.println("            1.Ranking de vehiculos                    ");
+            System.out.println("            2.Cantidad de Vehiculos que Cruzaron      ");
+            System.out.println("            3.Tiempo Promedio de Espera               ");
+            System.out.println("            4.Grafico de Intersecciones               ");
+            System.out.println("            5.Placas Duplicadas o en Conflicto        ");
+            System.out.println("            6.Registro de los Ultimos 20 Eventos      ");
+            System.out.println("------------------------------------------------------");
+            System.out.print("Ingrese su opcion aqui: ");
+            try {
+                option = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                this.warningNumericFormat();
+                continue;
+            }
+            if (!(option > 0 && option < 7)) {
                 System.out.println("Opcion Invalida!!!");
                 continue;
             }

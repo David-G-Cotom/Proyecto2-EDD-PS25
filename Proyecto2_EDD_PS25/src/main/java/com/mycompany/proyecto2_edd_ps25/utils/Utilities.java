@@ -52,7 +52,7 @@ public class Utilities {
                     System.out.println("Linea con formato incorrecto, ignorada: " + line);
                 }
             }
-            System.out.println("Datos Registrados en el Sistema");
+            System.out.println("Se Registraron " + vehicles.getSize() + " Vehiculos en el Sistema\n");
         } catch (IOException e) {
             System.out.println("Error al leer el archivo CSV: " + e.getMessage());
         }

@@ -201,7 +201,7 @@ public class AVLTree<T> {
     }
     
     public void print(int indentIncrement) {
-        System.out.println("\n--- Arbol AVL Visual ---");
+        System.out.println("\n-------------------- Arbol AVL Visual --------------------");
         if (this.root == null) {
             System.out.println("(Árbol vacío)");
         } else {
