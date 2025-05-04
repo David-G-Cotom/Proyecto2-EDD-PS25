@@ -65,6 +65,7 @@ public class ReportsController {
     
     public void averageVehicleWaitingTime(LinkedList<Vehicle> vehicles) {
         System.out.println("---------- TIEMPO PROMEDIO DE ESPERA POR TIPO DE VEHICULO ----------");
+        LinkedList<int[]> list = new LinkedList<>();
         int[] time = new int[VehicleType.values().length];
         int[] numberOfVehicles = new int[VehicleType.values().length];
         for (int i = 0; i < vehicles.getSize(); i++) {
@@ -73,10 +74,21 @@ public class ReportsController {
             numberOfVehicles[vehicle.getVehicleType().ordinal()]++;
         }
         for (int i = 0; i < VehicleType.values().length; i++) {
+            int[] values = new int[2];
+            values[0] = i;
             if (numberOfVehicles[i] == 0) {
-                System.out.println(VehicleType.values()[i].toString() + ": 0");
+                values[1] = 0;
+            } else {
+                values[1] = time[i]/numberOfVehicles[i];
             }
-            System.out.println(VehicleType.values()[i].toString() + ": " + time[i]/numberOfVehicles[i]);
+            list.addElementAt(values, "");
+        }
+        this.sortingAlgorithms.shaker_cocktail_Sort(list);
+        for (int i = 0; i < VehicleType.values().length; i++) {
+            if (list.getElementAt(i).getData()[1] == 0) {
+                System.out.println(VehicleType.values()[list.getElementAt(i).getData()[0]].toString() + ": 0");
+            }
+            System.out.println(VehicleType.values()[list.getElementAt(i).getData()[0]].toString() + ": " + list.getElementAt(i).getData()[1]);
         }
         System.out.println("");
     }

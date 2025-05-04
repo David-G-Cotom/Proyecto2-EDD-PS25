@@ -193,7 +193,7 @@ public class AVLTree<T> {
             } else if (size > node.getSize()) {
                 this.search(size, node.getRight(), list);
             } else {
-                list.addElementAt(node);
+                list.addElementAt(node, "");
                 this.search(size, node.getLeft(), list);
                 this.search(size, node.getRight(), list);
             }

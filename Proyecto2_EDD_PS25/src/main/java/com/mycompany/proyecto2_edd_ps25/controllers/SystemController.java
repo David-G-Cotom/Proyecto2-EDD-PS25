@@ -79,7 +79,7 @@ public class SystemController {
         this.avlTree.updateNode(node.getData().getComplexity() - 1, node.getData().getComplexity(), node.getData().getId());
         if (this.city.getIncrasedCongestion() < node.getData().getComplexity()) this.city.setIncrasedCongestion(node.getData().getComplexity());
         this.vehiclesInTheCity++;
-        this.vehicles.addElementAt(newVechicle);
+        this.vehicles.addElementAt(newVechicle, "");
         System.out.println("Vehiculo Registrado en el Sistema\n");
     }
     
@@ -132,6 +132,28 @@ public class SystemController {
         }
     }
     
+    private void searchVehicle() {
+        String plate;
+        do {
+            System.out.print("Ingrese la PLaca del Vehiculo a Buscar: ");
+            plate = scanner.nextLine().toUpperCase();
+            if (!this.utilities.validPlate(plate)) {
+                this.posters.plateFormatWarning();
+                continue;
+            }
+            break;
+        } while (true);
+        LinkedList<Vehicle> list = this.hashTable.get(plate);
+        for (int i = 0; i < list.getSize(); i++) {
+            Vehicle vehicle = list.getElementAt(i).getData();
+            String coordinateX = this.utilities.convertCoordinate(vehicle.getCurrentCoordinate()[0] - 1);
+            String coordinateY = vehicle.getCurrentCoordinate()[1] + "";
+            System.out.println(vehicle.toString());
+            System.out.println("Coordenada Actual: " + coordinateX + coordinateY);
+        }
+        System.out.println("");
+    }
+    
     public void execute() {
         int option = this.posters.mainMenu();
         switch (option) {
@@ -146,13 +168,14 @@ public class SystemController {
         this.city.printCity();
         System.out.println("---------- INICIO DE LA SIMULACION DE TRAFICO ----------");
         while (this.vehiclesInTheCity > 0) {
-            int option2 = this.posters.simulationType();
+            int option2 = this.posters.simulationMenu();
             switch (option2) {
                 case 1 -> this.manualSimulation();
                 case 2 -> this.automaticSimulation();
+                case 3 -> this.enterVechicle();
+                case 4 -> this.searchVehicle();
             }
-            int option3 = this.posters.enterVehicleMenu();
-            if (option3 == 1) this.enterVechicle();
+            this.city.printCity();
         }
         System.out.println("---------- SIMULACION TERMINADA ----------");
         int option4 = this.posters.menuViwReports();
@@ -178,7 +201,7 @@ public class SystemController {
             }
             congestion--;
         }
-        System.out.println("----- QUE INTERSECCION QUIERE LIBERAR? -----");
+        System.out.println("----- QUE INTERSECCION QUIERE LIBERAR/PROCESAR? -----");
         System.out.print("Ingrese su opcion aqui: ");
         String coordinate = this.scanner.nextLine().toUpperCase();
         //BUSCAR LA INTERSECCION DENTRO DE LA MATRIZ

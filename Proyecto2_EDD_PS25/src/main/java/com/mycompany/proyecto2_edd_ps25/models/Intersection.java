@@ -4,7 +4,6 @@
  */
 package com.mycompany.proyecto2_edd_ps25.models;
 
-import com.mycompany.proyecto2_edd_ps25.structs.matrix.IntersectionComplexityType;
 import com.mycompany.proyecto2_edd_ps25.structs.queue.NodeQueue;
 import com.mycompany.proyecto2_edd_ps25.structs.queue.PriorityQueue;
 

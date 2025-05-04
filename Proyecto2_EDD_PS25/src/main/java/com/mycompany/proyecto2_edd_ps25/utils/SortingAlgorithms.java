@@ -55,8 +55,48 @@ public class SortingAlgorithms {
         
     }
     
-    public void shaker_cocktail_Sort() {
-        
+    public void shaker_cocktail_Sort(LinkedList<int[]> list) {
+        if (list.getSize() < 2) return;
+
+        int start = 0;
+        int end = list.getSize() - 1;
+        boolean swapped = true;
+
+        while (swapped) {
+            swapped = false;
+            // --- PASADA HACIA ADELANTE ---
+            for (int i = start; i < end; i++) {
+                NodeList<int[]> nodeA = list.getElementAt(i);
+                NodeList<int[]> nodeB = list.getElementAt(i + 1);
+                // aquí asumimos que T es Persona; casteamos para acceder a getEdad()
+                if (nodeA.getData()[1] < nodeB.getData()[1]) {
+                    swapData(nodeA, nodeB);
+                    swapped = true;
+                }
+            }
+            // la última posición ya está bien colocada
+            end--;
+            if (!swapped) break;
+
+            swapped = false;
+            // --- PASADA HACIA ATRÁS ---
+            for (int i = end; i > start; i--) {
+                NodeList<int[]> nodeA = list.getElementAt(i - 1);
+                NodeList<int[]> nodeB = list.getElementAt(i);
+                if (nodeA.getData()[1] < nodeB.getData()[1]) {
+                    swapData(nodeA, nodeB);
+                    swapped = true;
+                }
+            }
+            // el primer elemento ya está en su sitio
+            start++;
+        }
+    }
+    
+    private void swapData(NodeList<int[]> a, NodeList<int[]> b) {
+        int[] tmp = a.getData();
+        a.setData(b.getData());
+        b.setData(tmp);
     }
     
 }

@@ -7,7 +7,6 @@ package com.mycompany.proyecto2_edd_ps25.models;
 import com.mycompany.proyecto2_edd_ps25.structs.list.LinkedList;
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.NodeMatrix;
 import com.mycompany.proyecto2_edd_ps25.structs.matrix.OrthogonalMatrix;
-import com.mycompany.proyecto2_edd_ps25.structs.matrix.StreetType;
 
 /**
  *
@@ -97,8 +96,8 @@ public class City {
     
     private void updateCityTemplate() {
         NodeMatrix<Intersection> aux = this.matrix.getRoot();
-        for (int i = 0; i < this.matrix.getDimensionY(); i++) {
-            for (int j = 0; j < this.matrix.getDimensionX(); j++) {
+        for (int i = 0; i < this.matrix.getDimensionX(); i++) {
+            for (int j = 0; j < this.matrix.getDimensionY(); j++) {
                 this.setStreetType(aux);
                 aux = aux.getNext();
             }

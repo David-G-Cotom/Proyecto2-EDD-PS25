@@ -4,6 +4,8 @@
  */
 package com.mycompany.proyecto2_edd_ps25.structs.matrix;
 
+import com.mycompany.proyecto2_edd_ps25.models.StreetType;
+
 /**
  *
  * @author Carlos Cotom

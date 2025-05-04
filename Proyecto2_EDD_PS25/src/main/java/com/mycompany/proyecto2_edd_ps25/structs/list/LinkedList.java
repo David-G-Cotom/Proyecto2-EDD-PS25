@@ -49,19 +49,20 @@ public class LinkedList<T> {
         return current;
     }
     
-    public NodeList<T> getElementAt(String key) {
+    public LinkedList<T> getElement(String key) {
         NodeList<T> current = this.head;
+        LinkedList<T> list = new LinkedList<>();
         while (current != null) {
             if (current.getKey().equals(key)) {
-                return current;
+                list.addElementAt(current.getData(), current.getKey());
             }
             current = current.getNext();
         }
-        return null;
+        return list;
     }
     
-    public void addElementAt(T element) {
-        NodeList<T> newNode = new NodeList<>(element);
+    public void addElementAt(T element, String key) {
+        NodeList<T> newNode = new NodeList<>(element, key);
         if (this.isEmpty()) {
             this.head = newNode;
             ++this.size;

@@ -33,23 +33,31 @@ public class Utilities {
                     try {
                         VehicleType vehicleType = VehicleType.valueOf(data[0].trim().toUpperCase());
                         String plate = data[1].trim().toUpperCase();
+                        if (!this.validPlate(plate)) {
+                            System.out.println("Error en formato de Placa linea: " + line + " -> ignorada");
+                            continue;
+                        }
                         String origin = data[2].trim().toUpperCase();
                         String destination = data[3].trim().toUpperCase();
                         int priority = Integer.parseInt(data[4].trim());
+                        if (priority < 1 && priority > 5) {
+                            System.out.println("Error en valor de Prioridad linea: " + line + " -> ignorada");
+                            continue;
+                        }
                         int waitingTime = Integer.parseInt(data[5].trim());
                         Vehicle newVechicle = new Vehicle(vehicleType, plate, origin, destination, waitingTime, priority);
-                        vehicles.addElementAt(newVechicle);
+                        vehicles.addElementAt(newVechicle, "");
                         int[] originCoordinates = this.convertCoordinate(origin);
                         int[] destinationCoordinates = this.convertCoordinate(destination);
-                        coordinates.addElementAt(originCoordinates);
-                        coordinates.addElementAt(destinationCoordinates);
+                        coordinates.addElementAt(originCoordinates, "");
+                        coordinates.addElementAt(destinationCoordinates, "");
                     } catch (NumberFormatException e) {
                         System.out.println("Error de formato numerico en linea: " + line + " -> ignorada");
                     } catch (IllegalArgumentException e) {
                         System.out.println("Error de formato para tipo de vehiculo en linea: " + line + " -> ignorada");
                     }
                 } else {
-                    System.out.println("Linea con formato incorrecto, ignorada: " + line);
+                    System.out.println("Linea con formato incorrecto porque Faltan Datos: " + line + " -> ignorada");
                 }
             }
             System.out.println("Se Registraron " + vehicles.getSize() + " Vehiculos en el Sistema\n");
@@ -85,6 +93,28 @@ public class Utilities {
         char c = (char) ('A' + residue);
         result.append(c);
         return result.toString();
+    }
+    
+    public boolean validPlate(String plate) {
+        if (plate.length() != 8) return false;
+        
+        int i = 1;
+        for (char c : plate.toCharArray()) {
+            if (i >= 1 && i <= 3) {
+                if (!Character.isLetter(c)) return false;
+            }
+            if (i == 8) {
+                if (!Character.isLetter(c)) return false;
+            }
+            if (i >= 5 && i <= 7) {
+                if (!Character.isDigit(c)) return false;
+            }
+            if (i == 4) {
+                if (c != '-') return false;
+            }
+            i++;
+        }
+        return true;
     }
 
 }

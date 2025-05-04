@@ -33,7 +33,7 @@ public class HashTable<T> {
     
     public void insert(String key, T data) {
         int hash = this.hashFunction(key);
-        this.map[hash].addElementAt(data);
+        this.map[hash].addElementAt(data, key);
     }
     
     private int hashFunction(String key) {
@@ -50,9 +50,9 @@ public class HashTable<T> {
         return hash % this.map.length;
     }
     
-    public T get(String key) {
+    public LinkedList<T> get(String key) {
         int hash = this.hashFunction(key);
-        return this.map[hash].getElementAt(key).getData();
+        return this.map[hash].getElement(key);
     }
     
     public LinkedList<Vehicle> getCollisions() {
@@ -68,10 +68,10 @@ public class HashTable<T> {
                     Vehicle compare = (Vehicle) linkedList.getElementAt(j).getData();
                     if (currentPlate.equals(compare.getPlate())) {
                         if (!isOnTheList(list, currentPlate)) {
-                            list.addElementAt(cuurent);
-                            singlePlates.addElementAt(currentPlate);
+                            list.addElementAt(cuurent, "");
+                            singlePlates.addElementAt(currentPlate, "");
                         }
-                        list.addElementAt(compare);
+                        list.addElementAt(compare, "");
                     }
                 }
             }

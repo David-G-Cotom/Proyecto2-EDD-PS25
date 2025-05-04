@@ -12,11 +12,13 @@ import java.util.Scanner;
  * @author Carlos Cotom
  */
 public class Posters {
-
+    
+    private final Utilities utilities;
     private final Scanner scanner;
 
     public Posters() {
         scanner = new Scanner(System.in);
+        this.utilities = new Utilities();
     }
 
     public int mainMenu() {
@@ -50,29 +52,6 @@ public class Posters {
         System.out.println("-----------------------------------------------------------");
         System.out.print("Click para continuar: ");
         scanner.nextLine();
-    }
-    
-    public int enterVehicleMenu() {
-        int option;
-        while (true) {
-            System.out.println("-------- QUIERE INGRESAR UN VEHICULO? --------");
-            System.out.println("                    1.Si                      ");
-            System.out.println("                    2.No                      ");
-            System.out.println("----------------------------------------------");
-            System.out.print("Ingrese la opcion aqui: ");
-            try {
-                option = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                this.warningNumericFormat();
-                continue;
-            }
-            if (option != 1 && option != 2) {
-                System.out.println("Opcion Invalida!!!");
-                continue;
-            }
-            break;
-        }
-        return option;
     }
 
     public VehicleType incomeType() {
@@ -109,14 +88,14 @@ public class Posters {
             System.out.println("--------------------------------------------------");
             System.out.print("Ingrese la placa aqui: ");
             plate = scanner.nextLine().toUpperCase();
-            if (plate.length() == 8) break;
+            if (this.utilities.validPlate(plate)) break;
             
             this.plateFormatWarning();
         }
         return plate;
     }
 
-    private void plateFormatWarning() {
+    public void plateFormatWarning() {
         System.out.println("-------------------- ADVERTENCIA! --------------------");
         System.out.println("   El numero de placa recomendado es el siguiente:    ");
         System.out.println("               AAA-000A (8 caracteres)                ");
@@ -203,7 +182,7 @@ public class Posters {
                 this.warningNumericFormat();
                 continue;
             }
-            if (priority < 1 && priority > 5) {
+            if (priority < 1 || priority > 5) {
                 System.out.println("Rango de Prioridad Invalido");
                 continue;
             }
@@ -237,12 +216,14 @@ public class Posters {
         System.out.println("--------------------------------------------------");
     }
     
-    public int simulationType() {
+    public int simulationMenu() {
         int option;
         while (true) {
-            System.out.println("--------------- TIPO DE SIMULACION ---------------");
-            System.out.println("                    1.Manual                      ");
-            System.out.println("                    2.Automatica                  ");
+            System.out.println("--------------- MENU DE SIMULACION ---------------");
+            System.out.println("                 1.Manual                         ");
+            System.out.println("                 2.Automatica                     ");
+            System.out.println("                 3.Ingresar Vehiculo              ");
+            System.out.println("                 4.Buscar Vehiculo                ");
             System.out.println("--------------------------------------------------");
             System.out.print("Ingrese su opcion aqui: ");
             try {
@@ -251,7 +232,7 @@ public class Posters {
                 this.warningNumericFormat();
                 continue;
             }
-            if (option != 1 && option != 2) {
+            if (option < 1 || option > 4) {
                 System.out.println("Opcion Invalida!!!");
                 continue;
             }

@@ -111,10 +111,12 @@ public class OrthogonalMatrix<T> {
     
     public void incraseMatrix(int incrementX, int incrementY, LinkedList<Intersection> newIntersections) {
         NodeMatrix<T> aux = this.getNode(0, this.dimensionY - 1);
-        for (int i = 0; i < this.dimensionX - 1; i++) {
-            this.incrementColumns(aux, i, incrementY, newIntersections);
-            aux = this.getNode(i + 1, this.dimensionY - 1);
-            this.incrementColumns(aux, i + 1, incrementY, newIntersections);
+        if (incrementY > 0) {
+            for (int i = 0; i < this.dimensionX - 1; i++) {
+                this.incrementColumns(aux, i, incrementY, newIntersections);
+                aux = this.getNode(i + 1, this.dimensionY - 1);
+                this.incrementColumns(aux, i + 1, incrementY, newIntersections);
+            }
         }
         if (incrementX > 0) {
             for (int i = this.dimensionX; i < this.dimensionX + incrementX; i++) {
@@ -123,7 +125,7 @@ public class OrthogonalMatrix<T> {
                 String coordinateNumber = "1";
                 Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
                 if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
-                newIntersections.addElementAt(newIntersection);
+                newIntersections.addElementAt(newIntersection, "");
                 NodeMatrix newNode = new NodeMatrix(newIntersection, i, 0);
                 newNode.setTop(aux);
                 aux.setBottom(newNode);
@@ -141,7 +143,7 @@ public class OrthogonalMatrix<T> {
             String coordinateNumber = String.valueOf(aux.getY() + 2);
             Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
             if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
-            newIntersections.addElementAt(newIntersection);
+            newIntersections.addElementAt(newIntersection, "");
             NodeMatrix newNode = new NodeMatrix(newIntersection, i, aux.getY() + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
@@ -154,12 +156,18 @@ public class OrthogonalMatrix<T> {
     }
     
     private void incrementRows(NodeMatrix<T> aux, int i, int incrementY, LinkedList<Intersection> newIntersections) {
-        for (int j = 0; j < this.dimensionY + incrementY - 1; j++) {
+        int columns;
+        if (incrementY > 0) {
+            columns = this.dimensionY + incrementY;
+        } else {
+            columns = this.dimensionY;
+        }
+        for (int j = 0; j < columns - 1; j++) {
             String coordinateLetter = this.utilities.convertCoordinate(i);
             String coordinateNumber = String.valueOf(j + 2);
             Intersection newIntersection = new Intersection(coordinateLetter + coordinateNumber);
             if (this.incrasedCongestion < newIntersection.getComplexity()) this.incrasedCongestion = newIntersection.getComplexity();
-            newIntersections.addElementAt(newIntersection);
+            newIntersections.addElementAt(newIntersection, "");
             NodeMatrix newNode = new NodeMatrix(newIntersection, i, j + 1);
             aux.setNext(newNode);
             newNode.setPrev(aux);
